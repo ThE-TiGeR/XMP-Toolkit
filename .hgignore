@@ -1,0 +1,3 @@
+syntax: glob
+build/vc14
+public/libraries/

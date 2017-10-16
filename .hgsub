@@ -1,0 +1,2 @@
+third-party/expat = ../expat
+third-party/zlib = ../zlib

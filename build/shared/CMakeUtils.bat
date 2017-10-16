@@ -65,6 +65,13 @@ set CMake_LibTypeFolderName=dynamic
 	set CMakeGenVersion_FolderSuffix=
 	)
 
+	:: Visual Studio Version
+	if /I "%1"=="2017" (
+	echo "Generator VS 2017 specified"
+	set GeneratorVersion=Visual Studio 15 2017
+	set CMakeGenVersion_FolderSuffix=
+	)
+
 	if /I "%1"=="WarningAsError" (
 	echo "sensible warnings activated"
 	set CMake_Build_Warning_As_Error=On
