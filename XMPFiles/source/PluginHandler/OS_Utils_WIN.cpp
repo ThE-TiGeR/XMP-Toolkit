@@ -18,8 +18,12 @@ OS_ModuleRef LoadModule( const std::string & inModulePath, bool inOnlyResourceAc
 	std::string wideString;
 	ToUTF16 ( (UTF8Unit*)inModulePath.c_str(), inModulePath.size() + 1, &wideString, false ); // need +1 character otherwise \0 won't be converted into UTF16
 
+#ifdef WINDOWS_UWP
+    OS_ModuleRef result = ::LoadPackagedLibrary((WCHAR*)wideString.c_str(), 0);
+#else
 	DWORD flags = inOnlyResourceAccess ? LOAD_LIBRARY_AS_IMAGE_RESOURCE : 0;
 	OS_ModuleRef result = ::LoadLibraryEx((WCHAR*) wideString.c_str(), NULL, flags);
+#endif
 
 	// anything below indicates error in LoadLibrary
 	if((result != NULL) && (result < OS_ModuleRef(32)))
@@ -45,6 +49,7 @@ bool GetResourceDataFromModule(
 	const std::string & inResourceType,
 	std::string & outBuffer)
 {
+#ifndef WINDOWS_UWP
 	HRSRC src = ::FindResourceA(inOSModule, reinterpret_cast<LPCSTR>(inResourceName.c_str()), reinterpret_cast<LPCSTR>(inResourceType.c_str()));
 	if( src != NULL )
 	{
@@ -60,6 +65,7 @@ bool GetResourceDataFromModule(
 
 		return true;
 	}
+#endif
 	return false;
 }
 

@@ -125,8 +125,12 @@ bool Host_IO::Create ( const char* filePath )
 	}
 
 	Host_IO::FileRef fileHandle;
-	fileHandle = CreateFileW ( (LPCWSTR)wideName.data(), (GENERIC_READ | GENERIC_WRITE), 0, 0, CREATE_ALWAYS,
-							   (FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS), 0 );
+#ifdef WINDOWS_UWP
+	fileHandle = CreateFile2((LPCWSTR)wideName.data(), (GENERIC_READ | GENERIC_WRITE), 0, CREATE_ALWAYS, 0);
+#else
+    fileHandle = CreateFileW((LPCWSTR)wideName.data(), (GENERIC_READ | GENERIC_WRITE), 0, 0, CREATE_ALWAYS,
+        (FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS), 0);
+#endif
 	if ( fileHandle == INVALID_HANDLE_VALUE ) XMP_Throw ( "Host_IO::Create, cannot create file", kXMPErr_InternalFailure );;
 
 	CloseHandle ( fileHandle );
@@ -296,6 +300,9 @@ void Host_IO::SwapData ( const char* sourcePath, const char* destPath )
 
 void Host_IO::Rename ( const char* oldPath, const char* newPath )
 {
+#ifdef WINDOWS_UWP
+    XMP_Throw("Host_IO::Rename, not implemented for UWP apps", kXMPErr_ExternalFailure);
+#else
 	std::string wideOldPath, wideNewPath;
 	if ( !GetWidePath ( oldPath, wideOldPath ) || wideOldPath.length() == 0 )
 		XMP_Throw ( "Host_IO::Rename, GetWidePath failure", kXMPErr_ExternalFailure );
@@ -309,7 +316,7 @@ void Host_IO::Rename ( const char* oldPath, const char* newPath )
 
 	BOOL ok = MoveFileW ( (LPCWSTR)wideOldPath.data(), (LPCWSTR)wideNewPath.data() );
 	if ( ! ok ) XMP_Throw ( "Host_IO::Rename, MoveFileW failure", kXMPErr_ExternalFailure );
-
+#endif
 }	// Host_IO::Rename
 
 // =================================================================================================
@@ -654,8 +661,12 @@ Host_IO::FileRef Open ( const std::string & widePath, bool readOnly )
 	}
 
 	Host_IO::FileRef fileHandle;
+#ifdef WINDOWS_UWP
+    fileHandle = CreateFile2((LPCWSTR)widePath.data(), (GENERIC_READ | GENERIC_WRITE), 0, OPEN_EXISTING, 0);
+#else
 	fileHandle = CreateFileW ( (LPCWSTR)widePath.data(), access, share, 0, OPEN_EXISTING,
 		(FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS), 0 );
+#endif
 	if ( fileHandle == INVALID_HANDLE_VALUE ) {
 		DWORD osCode = GetLastError();
 		if ( (osCode == ERROR_FILE_NOT_FOUND) || (osCode == ERROR_PATH_NOT_FOUND) || (osCode == ERROR_FILE_OFFLINE) ) {
@@ -680,8 +691,12 @@ Host_IO::FileRef OpenWithWriteShare ( const std::string & widePath, bool readOnl
 	}
 
 	Host_IO::FileRef fileHandle;
-	fileHandle = CreateFileW ( (LPCWSTR)widePath.data(), access, share, 0, OPEN_EXISTING,
+#ifdef WINDOWS_UWP
+    fileHandle = CreateFile2((LPCWSTR)widePath.data(), (GENERIC_READ | GENERIC_WRITE), 0, OPEN_EXISTING, 0);
+#else
+    fileHandle = CreateFileW((LPCWSTR)widePath.data(), access, share, 0, OPEN_EXISTING,
 		(FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS), 0 );
+#endif
 	if ( fileHandle == INVALID_HANDLE_VALUE ) {
 		DWORD osCode = GetLastError();
 		if ( (osCode == ERROR_FILE_NOT_FOUND) || (osCode == ERROR_PATH_NOT_FOUND) || (osCode == ERROR_FILE_OFFLINE) ) {
@@ -783,6 +798,9 @@ std::string Host_IO::GetCasePreservedName( const std::string& inputPath )
 {
 	if ( ! ContainsNonASCIICodePoints( inputPath ) )
 	{
+#ifdef WINDOWS_UWP
+        return inputPath;
+#else
 		DWORD allocate_size,retValue;
 		std::string widePath,systempath,longPathName,shortPathName;
 		if ( ! GetWidePath(inputPath.c_str(), widePath) || widePath.length() == 0)
@@ -810,6 +828,8 @@ std::string Host_IO::GetCasePreservedName( const std::string& inputPath )
 			XMP_Throw ( "Host_IO::GetCasePresevedLeafName, cannot convert path", kXMPErr_ExternalFailure );
 
 		return systempath.c_str();
+#endif
+
 	}
 	else
 	{
