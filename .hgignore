@@ -1,3 +1,4 @@
 syntax: glob
-build/vc14
 public/libraries/
+XMPCore/build/win64/
+XMPFiles/build/win64

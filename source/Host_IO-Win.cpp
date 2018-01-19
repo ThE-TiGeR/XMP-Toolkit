@@ -300,9 +300,6 @@ void Host_IO::SwapData ( const char* sourcePath, const char* destPath )
 
 void Host_IO::Rename ( const char* oldPath, const char* newPath )
 {
-#ifdef WINDOWS_UWP
-    XMP_Throw("Host_IO::Rename, not implemented for UWP apps", kXMPErr_ExternalFailure);
-#else
 	std::string wideOldPath, wideNewPath;
 	if ( !GetWidePath ( oldPath, wideOldPath ) || wideOldPath.length() == 0 )
 		XMP_Throw ( "Host_IO::Rename, GetWidePath failure", kXMPErr_ExternalFailure );
@@ -312,11 +309,12 @@ void Host_IO::Rename ( const char* oldPath, const char* newPath )
 
 	if ( ::Exists ( wideNewPath ) ) XMP_Throw ( "Host_IO::Rename, new path exists", kXMPErr_InternalFailure );
 
-	
-
-	BOOL ok = MoveFileW ( (LPCWSTR)wideOldPath.data(), (LPCWSTR)wideNewPath.data() );
-	if ( ! ok ) XMP_Throw ( "Host_IO::Rename, MoveFileW failure", kXMPErr_ExternalFailure );
+#ifdef WINDOWS_UWP
+    BOOL ok = MoveFileExW((LPCWSTR)wideOldPath.data(), (LPCWSTR)wideNewPath.data(), 0);
+#else
+    BOOL ok = MoveFileW((LPCWSTR)wideOldPath.data(), (LPCWSTR)wideNewPath.data());
 #endif
+    if (!ok) XMP_Throw("Host_IO::Rename, MoveFileW failure", kXMPErr_ExternalFailure);
 }	// Host_IO::Rename
 
 // =================================================================================================
