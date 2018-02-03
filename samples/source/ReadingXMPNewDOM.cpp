@@ -243,8 +243,11 @@ int main(int argc, const char * argv[])
 		    
 			// Get dc:MetadataDate			
 			AdobeXMPCore::spISimpleNode dateNode = metaNode->GetSimpleNode(kXMP_NS_XMP, AdobeXMPCommon::npos, "MetadataDate", AdobeXMPCommon::npos);
-			string date = dateNode->GetValue()->c_str();
-			cout << "meta:MetadataDate = " << date << endl;
+            if (dateNode)
+            {
+                string date = dateNode->GetValue()->c_str();
+                cout << "meta:MetadataDate = " << date << endl;
+            }
 			
 
 			// See if the flash struct exists and see if it was used
