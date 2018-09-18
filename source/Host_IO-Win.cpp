@@ -660,7 +660,7 @@ Host_IO::FileRef Open ( const std::string & widePath, bool readOnly )
 
 	Host_IO::FileRef fileHandle;
 #ifdef WINDOWS_UWP
-    fileHandle = CreateFile2((LPCWSTR)widePath.data(), (GENERIC_READ | GENERIC_WRITE), 0, OPEN_EXISTING, 0);
+    fileHandle = CreateFile2((LPCWSTR)widePath.data(), access, share, OPEN_EXISTING, 0);
 #else
 	fileHandle = CreateFileW ( (LPCWSTR)widePath.data(), access, share, 0, OPEN_EXISTING,
 		(FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS), 0 );
@@ -690,7 +690,7 @@ Host_IO::FileRef OpenWithWriteShare ( const std::string & widePath, bool readOnl
 
 	Host_IO::FileRef fileHandle;
 #ifdef WINDOWS_UWP
-    fileHandle = CreateFile2((LPCWSTR)widePath.data(), (GENERIC_READ | GENERIC_WRITE), 0, OPEN_EXISTING, 0);
+    fileHandle = CreateFile2((LPCWSTR)widePath.data(), access, share, OPEN_EXISTING, 0);
 #else
     fileHandle = CreateFileW((LPCWSTR)widePath.data(), access, share, 0, OPEN_EXISTING,
 		(FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS), 0 );
