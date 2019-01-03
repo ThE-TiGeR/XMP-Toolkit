@@ -1,4 +1,6 @@
 syntax: glob
 public/libraries/
-XMPCore/build/win64/
-XMPFiles/build/win64
+XMPCore/build/vc14
+XMPFiles/build/vc14
+samples/build/cmake/**/build/**
+samples/build/cmake/**/build_x64/**
