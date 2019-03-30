@@ -65,19 +65,19 @@ list (APPEND PUBLIC_HEADER
 	)
 source_group("Header Files\\Public Headers" FILES ${PUBLIC_HEADER})
 
-file (GLOB HEADERFILES_THIRDPARTY_ZLIB ${XMPROOT_DIR}/third-party/zlib/*.h)
-list (REMOVE_ITEM HEADERFILES_THIRDPARTY_ZLIB
-	${CMAKE_CURRENT_SOURCE_DIR}/${XMPROOT_DIR}/third-party/zlib/gzguts.h
-	)
-source_group("Header Files\\ThirdParty\\zlib" FILES ${HEADERFILES_THIRDPARTY_ZLIB})
+#file (GLOB HEADERFILES_THIRDPARTY_ZLIB ${XMPROOT_DIR}/third-party/zlib/*.h)
+#list (REMOVE_ITEM HEADERFILES_THIRDPARTY_ZLIB
+#	${CMAKE_CURRENT_SOURCE_DIR}/${XMPROOT_DIR}/third-party/zlib/gzguts.h
+#	)
+#source_group("Header Files\\ThirdParty\\zlib" FILES ${HEADERFILES_THIRDPARTY_ZLIB})
 
-list (APPEND FILES_THIRDPARTY_EXPAT
-	${TP_EXPAT_PATH}/xmlparse.c
-	${TP_EXPAT_PATH}/xmlrole.c
-	${TP_EXPAT_PATH}/xmltok.c
-	)
-list (APPEND FILES_THIRDPARTY_EXPAT ${RESOURCE_ROOT}/../../XMPCore/resource/${XMP_PLATFORM_SHORT}/expat_config.h)
-source_group("Source Files\\ThirdParty\\expat" FILES ${FILES_THIRDPARTY_EXPAT})
+#list (APPEND FILES_THIRDPARTY_EXPAT
+#	${TP_EXPAT_PATH}/xmlparse.c
+#	${TP_EXPAT_PATH}/xmlrole.c
+#	${TP_EXPAT_PATH}/xmltok.c
+#	)
+#list (APPEND FILES_THIRDPARTY_EXPAT ${RESOURCE_ROOT}/../../XMPCore/resource/${XMP_PLATFORM_SHORT}/expat_config.h)
+#source_group("Source Files\\ThirdParty\\expat" FILES ${FILES_THIRDPARTY_EXPAT})
 
 list (APPEND HEADERFILES
 	${XMPROOT_DIR}/source/Host_IO.hpp
@@ -168,20 +168,20 @@ source_group("Source Files\\Public\\XMPCommon" FILES ${PUBLIC_XMPCOMMON_CLIENTGL
 file (GLOB PUBLIC_XMPCORE_CLIENTGLUE_FILES ${XMPROOT_DIR}/public/include/XMPCore/source/*.*)
 source_group("Source Files\\Public\\XMPCore" FILES ${PUBLIC_XMPCORE_CLIENTGLUE_FILES})
 
-list (APPEND HEADERFILES_THIRDPARTY_ZLIB
-	${XMPROOT_DIR}/third-party/zlib/adler32.c
-	${XMPROOT_DIR}/third-party/zlib/compress.c
-	${XMPROOT_DIR}/third-party/zlib/crc32.c
-	${XMPROOT_DIR}/third-party/zlib/deflate.c
-	${XMPROOT_DIR}/third-party/zlib/infback.c
-	${XMPROOT_DIR}/third-party/zlib/inffast.c
-	${XMPROOT_DIR}/third-party/zlib/inflate.c
-	${XMPROOT_DIR}/third-party/zlib/inftrees.c
-	${XMPROOT_DIR}/third-party/zlib/trees.c
-	${XMPROOT_DIR}/third-party/zlib/uncompr.c
-	${XMPROOT_DIR}/third-party/zlib/zutil.c
-	)
-source_group("Source Files\\ThirdParty\\zlib" FILES ${HEADERFILES_THIRDPARTY_ZLIB})
+#list (APPEND HEADERFILES_THIRDPARTY_ZLIB
+#	${XMPROOT_DIR}/third-party/zlib/adler32.c
+#	${XMPROOT_DIR}/third-party/zlib/compress.c
+#	${XMPROOT_DIR}/third-party/zlib/crc32.c
+#	${XMPROOT_DIR}/third-party/zlib/deflate.c
+#	${XMPROOT_DIR}/third-party/zlib/infback.c
+#	${XMPROOT_DIR}/third-party/zlib/inffast.c
+#	${XMPROOT_DIR}/third-party/zlib/inflate.c
+#	${XMPROOT_DIR}/third-party/zlib/inftrees.c
+#	${XMPROOT_DIR}/third-party/zlib/trees.c
+#	${XMPROOT_DIR}/third-party/zlib/uncompr.c
+#	${XMPROOT_DIR}/third-party/zlib/zutil.c
+#	)
+#source_group("Source Files\\ThirdParty\\zlib" FILES ${HEADERFILES_THIRDPARTY_ZLIB})
 
 list(APPEND SOURCE_FILES
 	${INTERNAL_HEADER_COMMONCODE_NMDS}
@@ -280,6 +280,8 @@ AddLibraryAndDependencies(${TARGET_NAME} ${XMP_BUILD_STATIC} YES "SHARED" SOURCE
 if(WIN32)
 	target_link_libraries(
 		${TARGET_NAME}
+		zlibstatic
+		expat
 		${LIB_ADOBEXMP}
 		${XMP_PLATFORM_LINK}
 	)
@@ -287,6 +289,8 @@ else(WIN32)
 	if(UNIX AND NOT APPLE)
 		target_link_libraries(
 			${TARGET_NAME}
+			zlibstatic
+			expat
 			${LIB_ADOBEXMP}
 		)
 	endif()
