@@ -174,8 +174,22 @@ void IPTC_Manager::ParseMemoryDataSets ( const void* data, XMP_Uns32 length, boo
 	this->changed = false;
 	
 	if ( length == 0 ) return;
-	if ( (data == 0) || (*((XMP_Uns8*)data) != 0x1C) ) XMP_Throw ( "Not valid IPTC, no leading 0x1C", kXMPErr_BadIPTC );
-	
+    if (data == nullptr) XMP_Throw("Not valid IPTC, no leading 0x1C", kXMPErr_BadIPTC); 
+
+    // search for IPTC start value (normally it should be the first value)
+    while (data < reinterpret_cast<const XMP_Uns8*>(data) + length)
+    {
+        if (*reinterpret_cast<const XMP_Uns8*>(data) == 0x1C)
+        {
+            break;
+        }
+
+        data = reinterpret_cast<const XMP_Uns8*>(data) + 1;
+        length--;
+    }
+
+    if (length <= 1) XMP_Throw("Not valid IPTC, no leading 0x1C", kXMPErr_BadIPTC);
+
 	// Allocate space for the full in-memory data and copy it.
 	
 	if ( length > 10*1024*1024 ) XMP_Throw ( "Outrageous length for memory-based IPTC", kXMPErr_BadIPTC );
