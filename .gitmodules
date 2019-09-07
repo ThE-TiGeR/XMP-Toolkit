@@ -1,0 +1,6 @@
+[submodule "third-party/zlib"]
+	path = third-party/zlib
+	url = https://github.com/ThE-TiGeR/zlib.git
+[submodule "third-party/expat"]
+	path = third-party/expat
+	url = https://github.com/ThE-TiGeR/libexpat.git
