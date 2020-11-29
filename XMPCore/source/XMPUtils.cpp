@@ -3463,7 +3463,7 @@ XMPUtils::ConvertToLocalTime ( XMP_DateTime * time )
 	XMP_Assert ( (0 <= time->tzMinute) && (time->tzMinute <= 59) );
 	XMP_Assert ( (-1 <= time->tzSign) && (time->tzSign <= +1) );
 	XMP_Assert ( (time->tzSign == 0) ? ((time->tzHour == 0) && (time->tzMinute == 0)) :
-									   ((time->tzHour != 0) || (time->tzMinute != 0)) );
+									   ((time->tzHour > 12) || (time->tzMinute > 59)) );
 
 	ConvertToUTCTime ( time );	// The existing time zone might not be the local one.
 	time->hasTimeZone = false;	// ! Needed for SetTimeZone.
